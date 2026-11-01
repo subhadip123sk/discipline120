@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080b0d">
+<title>DISCIPLINE 120 — Habit Tracker</title>
+<style>
+:root{--bg:#07090b;--panel:#111519;--panel2:#171d21;--line:#293137;--green:#16e58b;--muted:#9ba7ae;--white:#f5f7f8;--gold:#ffc928}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 0%,#10241d 0,transparent 35%),var(--bg);color:var(--white);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+button,input{font:inherit}.wrap{max-width:1000px;margin:auto;padding:22px 18px 90px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:900;letter-spacing:1.5px;font-size:clamp(22px,4vw,34px)}.brand span{color:var(--green)}.tag{font-size:11px;letter-spacing:4px;color:var(--muted);margin-top:4px}.gear{border:1px solid var(--line);background:var(--panel);color:white;border-radius:50%;width:44px;height:44px;cursor:pointer}
+.hero{margin:22px 0 18px;padding:26px 24px;border:1px solid #23352e;border-radius:22px;background:linear-gradient(110deg,rgba(4,10,9,.95),rgba(8,22,17,.72)),radial-gradient(circle at 80% 20%,#244a3a,transparent 45%);min-height:145px;display:flex;align-items:center}.quote{font-size:clamp(21px,4vw,31px);font-weight:800;max-width:600px}.quote em{font-style:normal;color:var(--green)}.sub{color:#b5c0c4;margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat,.panel{background:linear-gradient(145deg,#151a1e,#0e1215);border:1px solid var(--line);border-radius:18px}.stat{padding:17px 12px;text-align:center}.stat .ico{font-size:23px}.num{font-size:30px;font-weight:850;margin:5px 0}.muted{color:var(--muted);font-size:13px}.panel{padding:19px;margin-top:16px}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.panel h2{font-size:19px;margin:0}.date{color:var(--muted);font-size:13px}
+.habit{display:flex;align-items:center;gap:12px;padding:11px 3px;border-top:1px solid #242b30}.habit:first-of-type{border-top:0}.habit .emoji{font-size:21px;width:30px;text-align:center}.habit .name{flex:1}.habit small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.habit input{appearance:none;width:24px;height:24px;border:2px solid #68747b;border-radius:50%;cursor:pointer;flex-shrink:0}.habit input:checked{background:var(--green);border-color:var(--green);box-shadow:inset 0 0 0 5px #10251b}
+.progress{height:10px;background:#283137;border-radius:20px;overflow:hidden;margin-top:10px}.bar{height:100%;background:linear-gradient(90deg,#08b96e,var(--green));border-radius:20px;width:0%;transition:width .2s}
+.weekrow{display:grid;grid-template-columns:110px 1fr 48px;align-items:center;gap:12px;margin:15px 0}.weekrow strong{font-size:13px}.weekrow .progress{margin:0}.weekrow button{background:var(--panel2);border:1px solid var(--line);color:var(--white);border-radius:9px;padding:5px;cursor:pointer}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.day{padding:9px 3px;text-align:center;background:#171d21;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:11px}.day b{display:block;color:white;font-size:15px;margin-top:5px}.day.done{border-color:var(--green);color:var(--green)}.day.today{box-shadow:0 0 0 2px var(--green)}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(8,11,13,.96);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;gap:clamp(18px,8vw,90px);padding:10px 8px calc(10px + env(safe-area-inset-bottom));z-index:4}.nav button{background:none;border:0;color:var(--muted);cursor:pointer;font-size:12px}.nav button.active{color:var(--green)}.nav span{display:block;font-size:20px;margin-bottom:3px}
+.section{display:none}.section.active{display:block}.btn{background:#123c2b;border:1px solid #1c8055;color:#baffd9;padding:9px 13px;border-radius:10px;cursor:pointer}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.note{font-size:12px;color:var(--muted);line-height:1.5}.calendar{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}.cell{aspect-ratio:1;display:grid;place-items:center;border:1px solid var(--line);background:#151b1f;border-radius:8px;font-size:11px;color:var(--muted)}.cell.done{background:#0d3827;border-color:#159b61;color:#aaffd2}.field{background:#0b1012;color:white;border:1px solid var(--line);padding:9px;border-radius:9px;width:100%;max-width:220px}
+@media(max-width:620px){.wrap{padding:16px 12px 90px}.stats{grid-template-columns:repeat(2,1fr)}.stat{padding:13px 8px}.num{font-size:26px}.panel{padding:15px}.weekrow{grid-template-columns:86px 1fr 43px;gap:8px}.calendar{grid-template-columns:repeat(8,1fr)}.hero{min-height:120px;padding:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div><div class="brand">♛ DISCIPLINE <span>120</span></div><div class="tag">TRACK • IMPROVE • ACHIEVE</div></div><button class="gear" title="Settings" onclick="showSection('profile')">⚙</button></header>
+<div class="hero"><div><div class="quote"><em>Discipline</em> today,<br><em>freedom</em> tomorrow.</div><div class="sub">— Keep going. One day at a time.</div></div></div>
+<section id="home" class="section active">
+<div class="stats">
+<div class="stat"><div class="ico">▦</div><div class="num">120</div><div class="muted">Total Days</div></div>
+<div class="stat"><div class="ico">🔥</div><div class="num" id="streak">0</div><div class="muted">Day Streak</div></div>
+<div class="stat"><div class="ico">◉</div><div class="num" id="percent">0%</div><div class="muted">Overall Progress</div></div>
+<div class="stat"><div class="ico">🏆</div><div class="num" id="completedDays">0 / 120</div><div class="muted">Days Completed</div></div>
+</div>
+<div class="panel"><div class="panelhead"><h2>🟢 Today's Habits</h2><div class="date" id="todayLabel"></div></div><div id="habits"></div><div class="progress"><div class="bar" id="todayBar"></div></div><div class="muted" id="todayCount" style="margin-top:8px">0 of 8 daily habits complete</div></div>
+<div class="panel"><div class="panelhead"><h2>📊 Weekly Overview</h2><span class="muted">This week</span></div>
+<div class="weekrow"><strong>🏃 Running</strong><div class="progress"><div class="bar" id="runBar"></div></div><button onclick="addWeekly('run',-1)">−</button><span id="runCount">0 / 4</span><button onclick="addWeekly('run',1)">+</button></div>
+<div class="weekrow"><strong>🏋️ Workout</strong><div class="progress"><div class="bar" id="workBar"></div></div><button onclick="addWeekly('work',-1)">−</button><span id="workCount">0 / 5</span><button onclick="addWeekly('work',1)">+</button></div>
+<p class="note">Use + or − to record completed sessions this week. Allow recovery days between demanding workouts.</p></div>
+<div class="panel"><div class="panelhead"><h2>🗓 120 Day Calendar</h2><span class="muted" id="dayLabel">Day 1</span></div><div class="days" id="weekDays"></div><div class="actions"><button class="btn" onclick="showSection('calendar')">View all 120 days →</button></div></div>
+</section>
+<section id="calendar" class="section"><div class="panel"><div class="panelhead"><h2>120 Day Calendar</h2></div><div class="calendar" id="allDays"></div><p class="note">A day is marked complete when all eight daily habits are checked.</p></div></section>
+<section id="stats" class="section"><div class="panel"><h2>Progress statistics</h2><div class="num" id="statsPercent">0%</div><div class="muted">Daily habit completion across the 120-day challenge</div><div class="progress"><div class="bar" id="statsBar"></div></div><p id="statsText" class="note"></p></div></section>
+<section id="achievements" class="section"><div class="panel"><h2>🏆 Achievements</h2><p>Keep showing up to unlock milestones.</p><div id="badges" class="note"></div></div></section>
+<section id="profile" class="section"><div class="panel"><h2>⚙ Challenge settings</h2><p class="note">Choose the first day of your 120-day challenge. Your progress is saved in this browser on this device.</p><label class="muted">Challenge start date</label><br><input class="field" type="date" id="startDate"><div class="actions"><button class="btn" onclick="saveStart()">Save start date</button><button class="btn" onclick="exportData()">Export backup</button><button class="btn" onclick="resetData()">Reset all data</button></div><p class="note">Export a backup before clearing browser data or switching devices.</p></div></section>
+</div>
+<nav class="nav"><button class="active" onclick="showSection('home',this)"><span>⌂</span>Home</button><button onclick="showSection('stats',this)"><span>▥</span>Stats</button><button onclick="showSection('achievements',this)"><span>🏆</span>Achievements</button><button onclick="showSection('profile',this)"><span>●</span>Profile</button></nav>
+<script>
+const daily=[
+['📚','Study','Complete 6 hours of study'],
+['👟','Walk','Reach 10,000 steps'],
+['🧘','Meditation','Meditate for 7 minutes'],
+['📵','Social media','Keep use under 2 hours'],
+['💻','Online classes','Complete 3 classes'],
+['🛌','Sleep','Aim for 8–10 hours (teen sleep guidance)'],
+['🥗','Food choice','Avoid junk food; aim for balanced meals'],
+['🛡️','Healthy choices','Avoid unwanted habits; seek support if needed']
+];
+const KEY='discipline120_v1';
+let data=JSON.parse(localStorage.getItem(KEY)||'{}');
+const iso=d=>{let x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const today=iso(new Date());
+if(!data.start)data.start=today;
+if(!data.days)data.days={};if(!data.weeks)data.weeks={};
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function dayIndex(date){return Math.floor((new Date(date+'T12:00:00')-new Date(data.start+'T12:00:00'))/86400000)+1}
+function weekKey(date){let d=new Date(date+'T12:00:00');let monday=new Date(d);monday.setDate(d.getDate()-(d.getDay()+6)%7);return iso(monday)}
+function record(date=today){return data.days[date]||(data.days[date]={})}
+function isComplete(date){let r=data.days[date]||{};return daily.every((_,i)=>!!r[i])}
+function render(){
+ document.getElementById('todayLabel').textContent=new Date().toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+ let r=record();document.getElementById('habits').innerHTML=daily.map((h,i)=>`<label class="habit"><span class="emoji">${h[0]}</span><span class="name">${h[1]}<small>${h[2]}</small></span><input type="checkbox" ${r[i]?'checked':''} onchange="toggle(${i},this.checked)" aria-label="${h[1]}"></label>`).join('');
+ let n=daily.filter((_,i)=>r[i]).length,p=Math.round(n/daily.length*100);document.getElementById('todayBar').style.width=p+'%';document.getElementById('todayCount').textContent=`${n} of 8 daily habits complete`; 
+ let dates=Object.keys(data.days).filter(d=>dayIndex(d)>=1&&dayIndex(d)<=120),done=dates.filter(isComplete).length,totalChecks=dates.reduce((a,d)=>a+daily.filter((_,i)=>data.days[d]?.[i]).length,0),overall=Math.round(totalChecks/(120*8)*100);
+ document.getElementById('percent').textContent=overall+'%';document.getElementById('completedDays').textContent=done+' / 120';document.getElementById('statsPercent').textContent=overall+'%';document.getElementById('statsBar').style.width=overall+'%';document.getElementById('statsText').textContent=`${totalChecks} of ${120*8} possible daily habit check-ins recorded. ${done} fully completed days.`;
+ let streak=0;for(let i=0;i<120;i++){let d=new Date(today+'T12:00:00');d.setDate(d.getDate()-i);let s=iso(d);if(dayIndex(s)>=1&&isComplete(s))streak++;else if(i===0)continue;else break}document.getElementById('streak').textContent=streak;
+ let wk=data.weeks[weekKey(today)]||{run:0,work:0};document.getElementById('runCount').textContent=`${wk.run}/4`;document.getElementById('workCount').textContent=`${wk.work}/5`;document.getElementById('runBar').style.width=Math.min(wk.run/4*100,100)+'%';document.getElementById('workBar').style.width=Math.min(wk.work/5*100,100)+'%';
+ document.getElementById('dayLabel').textContent='Day '+Math.max(1,Math.min(120,dayIndex(today)));let wd=document.getElementById('weekDays');wd.innerHTML='';let base=new Date(today+'T12:00:00');base.setDate(base.getDate()-(base.getDay()+6)%7);for(let i=0;i<7;i++){let d=new Date(base);d.setDate(base.getDate()+i);let s=iso(d);wd.innerHTML+=`<div class="day ${isComplete(s)?'done':''} ${s===today?'today':''}">${d.toLocaleDateString(undefined,{weekday:'short'})}<b>${d.getDate()}</b></div>`}
+ let all=document.getElementById('allDays');all.innerHTML='';for(let i=1;i<=120;i++){let d=new Date(data.start+'T12:00:00');d.setDate(d.getDate()+i-1);let s=iso(d);all.innerHTML+=`<div class="cell ${isComplete(s)?'done':''}" title="${s}">${i}</div>`}
+ document.getElementById('startDate').value=data.start;document.getElementById('badges').innerHTML=[1,7,14,30,60,90,120].map(x=>`${done>=x?'🏆':'🔒'} ${x} completed days ${done>=x?'— unlocked':'— not yet unlocked'}`).join('<br>');
+}
+function toggle(i,v){record()[i]=v;save()}
+function addWeekly(k,delta){let w=data.weeks[weekKey(today)]||(data.weeks[weekKey(today)]={run:0,work:0});w[k]=Math.max(0,Math.min(k==='run'?4:5,(w[k]||0)+delta));save()}
+function showSection(id,btn){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');else{let b=[...document.querySelectorAll('.nav button')].find(x=>x.textContent.toLowerCase().includes(id));if(b)b.classList.add('active')}}
+function saveStart(){let v=document.getElementById('startDate').value;if(!v)return;data.start=v;save();alert('Challenge start date saved.')}
+function exportData(){let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='discipline-120-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function resetData(){if(confirm('This permanently clears this browser’s saved habit records. Export a backup first. Continue?')){localStorage.removeItem(KEY);data={start:today,days:{},weeks:{}};save()}}
+render();
+</script>
+</body></html>
